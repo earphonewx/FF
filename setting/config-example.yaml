@@ -1,0 +1,67 @@
+# 服务器配置
+server:
+  http-port: 8888
+  read-timeout: 60
+  write-timeout: 60
+  # 运行模式（debug/release/test）,本地调试建议使用debug，线上请设置为release
+  run-mode: "release"
+
+
+# mysql配置
+mysql:
+  user: "user"
+  password: "password"
+  port: 3306
+  host: "127.0.0.1"
+  db-name: "dbName"
+  # 是否开启sql日志，即使开启，也只在控制台看得到，日志文件不会记录
+  enable-sql-log: false
+  # 连接池中的最大闲置连接数
+  max-idle-conn: 10
+  # 数据库的最大连接数
+  max-open-conn: 1000
+  # 连接的最大可复用时间，单位：分钟
+  conn-max-lifetime: 60
+
+
+# redis配置
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  password: ""
+  db: 0
+
+
+# jwt配置
+jwt:
+  secret: "secret"
+
+
+# 天气预报功能，需自行注册高德开发者账号并申请secret-key
+# 高德api文档地址：https://lbs.amap.com/api/webservice/guide/api/weatherinfo/
+weather:
+  # 天气信息更新频率，单位：分钟
+  update-frequency: 3
+  # 调用高德api所需secret-key，需自行申请
+  secret-key: "secret-key"
+  api: "https://restapi.amap.com"
+
+
+# 爬数据相关http客户端配置(暂时无用，以后可能会自定义配置)
+http-client:
+  # 最大空闲(keep-alive)连接数
+  max-idle-conn: 100
+
+
+# 日志配置
+log:
+  # 每个日志文件的最大大小，单位：M
+  max-file-size: 100
+  # 日志文件路径
+  filename: "./logs/ff.log"
+  # 日志文件最多保存多少个备份
+  max-backups: 3
+  # 日志文件保留多久（单位：天）
+  max-age: 30
+  # 是否压缩
+  compress: true

@@ -1,0 +1,63 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is ff.",
+        "title": "ff API",
+        "contact": {
+            "name": "fengfeng",
+            "url": "http://www.earphonewx.top",
+            "email": "earphonewx@163.com"
+        },
+        "license": {},
+        "version": "latest"
+    },
+    "host": "localhost:8000",
+    "basePath": "/api",
+    "paths": {
+        "/bookmark": {
+            "get": {
+                "description": "可以根据id、title、url、type过滤获取相应书签列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "获取书签"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Title",
+                        "name": "title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Url",
+                        "name": "url",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Type",
+                        "name": "type",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"current_page\":1,\"count\":100,\"data\":[]}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

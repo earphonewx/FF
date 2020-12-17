@@ -1,0 +1,42 @@
+basePath: /api
+host: localhost:8000
+info:
+  contact:
+    email: earphonewx@163.com
+    name: fengfeng
+    url: http://www.earphonewx.top
+  description: This is ff.
+  license: {}
+  title: ff API
+  version: latest
+paths:
+  /bookmark:
+    get:
+      description: 可以根据id、title、url、type过滤获取相应书签列表
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        type: integer
+      - description: Title
+        in: query
+        name: title
+        type: string
+      - description: Url
+        in: query
+        name: url
+        type: string
+      - description: Type
+        in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"current_page":1,"count":100,"data":[]}'
+          schema:
+            type: string
+      tags:
+      - 获取书签
+swagger: "2.0"
