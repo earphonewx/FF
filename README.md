@@ -42,11 +42,9 @@ nohup  ./ff webserver start	&
 提供web api，包含的app：
 
 ```
-bookmark（书签）：类似于浏览器书签栏。
-
-memo（备忘录）：一个小小的备忘录。
-
-天气预报： 使用高德API
+bookmark（书签）
+memo（备忘录）
+天气预报
 ```
 
 
