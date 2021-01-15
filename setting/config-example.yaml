@@ -1,4 +1,10 @@
-# 服务器配置
+# 各个功能开关
+module:
+  # 用户注册功能
+  registration: true
+
+
+# 服务参数配置
 server:
   http-port: 8888
   read-timeout: 60
@@ -13,7 +19,7 @@ mysql:
   password: "password"
   port: 3306
   host: "127.0.0.1"
-  db-name: "dbName"
+  db: "dbName"
   # 是否开启sql日志，即使开启，也只在控制台看得到，日志文件不会记录
   enable-sql-log: false
   # 连接池中的最大闲置连接数

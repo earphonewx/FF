@@ -36,5 +36,6 @@ func init() {
 	//viper.SetDefault("license", "apache")
 
 	rootCmd.AddCommand(migrateCmd)
+	rootCmd.AddCommand(mkPwdCmd)
 	rootCmd.AddCommand(webServerCmd)
 }

@@ -20,6 +20,7 @@ func InitViper() {
 	}
 
 	if err := g.VP.ReadInConfig(); err != nil {
+		fmt.Println("==>setting目录下未找到config-example.yaml/config.yaml配置文件，请确保配置文件存在！")
 		panic(fmt.Errorf("==>加载配置文件失败: %s \n", err))
 	}
 	fmt.Println("==>加载配置文件成功！")

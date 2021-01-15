@@ -15,7 +15,7 @@ func InitMysql() {
 			g.VP.GetString("mysql.password"),
 			g.VP.GetString("mysql.host"),
 			g.VP.GetInt("mysql.port"),
-			g.VP.GetString("mysql.db-name")))
+			g.VP.GetString("mysql.db")))
 	if err != nil {
 		panic(fmt.Errorf("==>初始化MySQL配置失败: %s \n", err))
 	}

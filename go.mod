@@ -27,6 +27,7 @@ require (
 	github.com/swaggo/gin-swagger v1.2.0
 	github.com/swaggo/swag v1.6.7
 	go.uber.org/zap v1.16.0
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/tools v0.0.0-20200604183345-4d5ea46c79fe // indirect
 	gopkg.in/ini.v1 v1.58.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
