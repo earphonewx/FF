@@ -15,3 +15,13 @@ func SearchCity(c *gin.Context) {
 	res := weather.QueryCity(addr)
 	c.JSON(http.StatusOK, gin.H{"data": res})
 }
+
+func CityWeather(c *gin.Context) {
+	adcode := c.Query("adcode")
+	if adcode == "" {
+		c.JSON(http.StatusOK, gin.H{"data": [0]int{}})
+		return
+	}
+	res := weather.WeatherInfoNow(adcode)
+	c.JSON(http.StatusOK, gin.H{"data": [1]weather.Weather{*res}})
+}

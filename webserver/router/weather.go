@@ -10,5 +10,7 @@ func InitWeatherRouter(Router *gin.RouterGroup) {
 	{
 		// 查询城市编码
 		weatherRouter.GET("/weather/cityCode", api.SearchCity)
+		// 查询天气情况
+		weatherRouter.GET("/weather", api.CityWeather)
 	}
 }

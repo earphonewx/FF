@@ -53,7 +53,7 @@ weather:
   api: "https://restapi.amap.com"
 
 
-# 爬数据相关http客户端配置(暂时无用，以后可能会自定义配置)
+# 抓数据相关http客户端配置(暂时无用，以后可能会自定义配置)
 http-client:
   # 最大空闲(keep-alive)连接数
   max-idle-conn: 100

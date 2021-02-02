@@ -16,7 +16,7 @@ type Password struct {
 
 func (pwd *Password) MkPassword(plainText string) *Password {
 	pwd.PlainText = plainText
-	pwd.Iterations = 100000
+	pwd.Iterations = 200000
 	var err error
 	if pwd.Salt, err = GenRandomStr(12); err != nil {
 		panic(fmt.Errorf("生成密码失败：%s\n", err))

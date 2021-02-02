@@ -3,6 +3,7 @@ package cmd
 import (
 	"ff/g"
 	"ff/initialize"
+	"ff/weather"
 	"fmt"
 	"net/http"
 	"time"
@@ -37,18 +38,15 @@ func startWebServer() {
 	// 初始化路由
 	rootRouter := initialize.InitRouter()
 
-	// 初始化数据库配置
-	initialize.InitMysql()
-
-	// 初始化http客户端连接池
-	initialize.InitHttpClient()
-
 	// 程序结束后关闭数据库连接
 	defer func() {
-		if err := g.DB.Close(); err != nil{
+		if err := g.DB().Close(); err != nil{
 			panic(fmt.Errorf("==>停止应用...关闭数据库连接时出错: %s \n", err))
 		}
 	}()
+
+	// 定时爬取天气预报信息
+	go weather.RealtimeWeather(time.Second*20)
 
 	// HTTP配置
 	S = &http.Server{
