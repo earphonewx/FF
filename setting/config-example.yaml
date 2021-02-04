@@ -47,10 +47,13 @@ jwt:
 # 高德api文档地址：https://lbs.amap.com/api/webservice/guide/api/weatherinfo/
 weather:
   # 天气信息更新频率，单位：分钟
-  update-frequency: 3
+  # 个人开发者建议设置为60分钟，个人认证开发者建议设置为20分钟
+  update-frequency: 20
   # 调用高德api所需secret-key，需自行申请
   secret-key: "secret-key"
   api: "https://restapi.amap.com"
+  # 调用高德api获取天气信息的qps，根据高德开放平台限制设置
+  weather-qps: 100
 
 
 # 抓数据相关http客户端配置(暂时无用，以后可能会自定义配置)
