@@ -88,20 +88,24 @@ func WeatherInfoNow(adcode string) (weather *Weather) {
 			}
 		}
 	}
-	g.Logger.Error(fmt.Sprint("get city weather failed:", err))
+	g.Logger.Error(fmt.Sprintln("get city weather failed:", adcode, err))
 	return &res.Lives[0]
 }
 
 // 根据城市编码去redis缓存中获取天气情况
-//func CityWeather(adcode string)
+func WeatherCached(adcode string) (map[string]string, error) {
+	ctx := context.Background()
+	return g.RDB().HGetAll(ctx, "weather:"+adcode).Result()
+}
 
 // 缓存某地区天气信息
-func CachedWeather(weather *Weather) error {
-	if *weather == (Weather{}) {
+func CacheWeather(weather *Weather) {
+	if *weather == (Weather{}) || weather == nil {
 		g.Logger.Warn("无效的天气信息")
+		return
 	}
-	var ctx = context.Background()
-	return g.RDB().HSet(ctx, "weather:"+ weather.Adcode,
+	ctx := context.Background()
+	g.RDB().HSet(ctx, "weather:"+weather.Adcode,
 		map[string]interface{}{
 			"province":      weather.Province,
 			"city":          weather.City,
@@ -111,18 +115,17 @@ func CachedWeather(weather *Weather) error {
 			"windpower":     weather.WindPower,
 			"humidity":      weather.Humidity,
 			"updatetime":    time.Now().Format("2006-01-02 15:04:05"),
-			"reporttime":    weather.ReportTime}).Err()
+			"reporttime":    weather.ReportTime})
 }
 
 // 拉取并更新天气信息
-func pullUpdateWeatherInfo(adcode string) error {
+func pullUpdateWeatherInfo(adcode string) {
 	res := WeatherInfoNow(adcode)
-	return CachedWeather(res)
+	CacheWeather(res)
 }
 
 func weatherInfoTask() error {
 	randomValue, err := g.UIDGen().NextID()
-	fmt.Println("iddddddddddddddddddddd:", randomValue)
 	if err != nil {
 		g.Logger.Error("生成分布式锁随机值失败，更新天气信息任务终止")
 		return err
@@ -139,44 +142,41 @@ func weatherInfoTask() error {
 	}
 	defer func() {
 		if err := weatherLock.Unlock(); err != nil {
-			fmt.Println("unlockkkkkkkkkkkkkkkkkkkkkk:")
 			g.Logger.Warn("更新天气信息完成，但解锁失败")
 		}
 	}()
-
-	pipe := g.RDB().Pipeline()
-	defer func() {
-		if err := pipe.Close(); err != nil {
-			g.Logger.Warn("拉取天气信息时关闭redis pipeline失败")
-		}
-	}()
-	var userCityArr []model.AuthUser
-	if err := g.DB().Model(&model.AuthUser{}).Select("city_adcode").Find(&userCityArr).Error; err != nil {
+	var adcodes []string
+	if err := g.DB().Model(&model.AuthUser{}).Pluck("distinct(city_adcode)", &adcodes).Error; err != nil {
 		g.Logger.Error("获取城市编码列表失败")
 		return err
 	}
+	weatherChan := make(chan string, 1)
 	limiter := time.Tick(time.Second / g.VP.GetDuration("weather.weather-qps"))
-	for _, item := range userCityArr {
-		//fmt.Println("each code:", item.CityAdcode)
-		<-limiter
-		go func(el *model.AuthUser) {
-			fmt.Println("-------------->", el.CityAdcode)
-			if err := pullUpdateWeatherInfo(el.CityAdcode); err != nil {
-				g.Logger.Warn(fmt.Sprintln("更新天气信息失败, 城市编码：", el.CityAdcode))
-			}
-		}(&item)
+	go func() {
+		for _, item := range adcodes {
+			<-limiter
+			weatherChan <- item
+		}
+		close(weatherChan)
+	}()
+
+	for {
+		if adcode, ok := <-weatherChan; ok && adcode != "" {
+			go pullUpdateWeatherInfo(adcode)
+		} else {
+			break
+		}
 	}
 	return nil
 }
 
 func RealtimeWeather(interval time.Duration) {
-	//fmt.Println(interval)
-	ticker := time.NewTicker(interval)
-	for range ticker.C {
-		go func() {
-			if err := weatherInfoTask(); err != nil {
-				g.Logger.Warn("拉取天气信息任务执行失败")
-			}
-		}()
+	ticker := time.Tick(interval)
+	for range ticker {
+		g.Logger.Info("==>开始更新天气信息...")
+		if err := weatherInfoTask(); err != nil {
+			g.Logger.Warn("拉取天气信息任务执行失败")
+		}
+		g.Logger.Info("==>更新天气信息完成...")
 	}
 }

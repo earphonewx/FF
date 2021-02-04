@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"errors"
 	"ff/g"
 	"github.com/go-redis/redis/v8"
 	"time"
@@ -15,7 +16,10 @@ type RedLock struct {
 }
 
 func (r *RedLock) Lock() error {
-	return g.RDB().SetNX(r.Ctx, r.Key, r.Value, r.Expiry).Err()
+	 if res, err := g.RDB().SetNX(r.Ctx, r.Key, r.Value, r.Expiry).Result(); !res || err != nil {
+	 	return errors.New("获取redlock失败")
+	 }
+	 return nil
 }
 
 var deleteScript = redis.NewScript(`

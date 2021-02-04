@@ -22,6 +22,13 @@ func CityWeather(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"data": [0]int{}})
 		return
 	}
-	res := weather.WeatherInfoNow(adcode)
-	c.JSON(http.StatusOK, gin.H{"data": [1]weather.Weather{*res}})
+	// 先从缓存拿
+	if res, err := weather.WeatherCached(adcode); (err == nil) && (res != nil) && (len(res) != 0) {
+		c.JSON(http.StatusOK, gin.H{"data": res})
+		return
+	}
+	// 缓存没有就实时拉取并更新缓存
+	weatherNow := weather.WeatherInfoNow(adcode)
+	weather.CacheWeather(weatherNow)
+	c.JSON(http.StatusOK, gin.H{"data": weatherNow})
 }

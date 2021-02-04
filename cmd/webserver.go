@@ -40,13 +40,13 @@ func startWebServer() {
 
 	// 程序结束后关闭数据库连接
 	defer func() {
-		if err := g.DB().Close(); err != nil{
+		if err := g.DB().Close(); err != nil {
 			panic(fmt.Errorf("==>停止应用...关闭数据库连接时出错: %s \n", err))
 		}
 	}()
 
 	// 定时爬取天气预报信息
-	go weather.RealtimeWeather(time.Second*20)
+	go weather.RealtimeWeather(time.Minute * g.VP.GetDuration("weather.update-frequency"))
 
 	// HTTP配置
 	S = &http.Server{
